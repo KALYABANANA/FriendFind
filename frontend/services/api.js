@@ -1,0 +1,66 @@
+import { Platform } from 'react-native';
+import Constants from 'expo-constants';
+
+/** พอร์ตเดียวกับ backend (docker-compose BACKEND_PORT / server PORT) */
+const DEFAULT_PORT = 5000;
+const DEFAULT_WEB = `http://localhost:${DEFAULT_PORT}`;
+
+/**
+ * ลำดับการเลือก API base:
+ * 1) EXPO_PUBLIC_API_URL — override ทุกแพลตฟอร์ม (เช่น มือถือจริงชี้ IP เครื่อง dev)
+ * 2) Web: extra.apiBaseWeb หรือ http://localhost:PORT (รัน Web + Docker backend บนเครื่องเดียวกัน)
+ * 3) Native: extra.apiBase ถ้ามี ไม่เช่นนั้นใช้ค่าเริ่มต้นตาม OS (iOS sim / Android emu)
+ */
+function getDefaultNativeBase() {
+  if (Platform.OS === 'android') return `http://10.0.2.2:${DEFAULT_PORT}`;
+  return DEFAULT_WEB;
+}
+
+export function getApiBase() {
+  const fromEnv =
+    typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_API_URL;
+  if (fromEnv) return fromEnv;
+
+  const extra = Constants.expoConfig?.extra || {};
+
+  if (Platform.OS === 'web') {
+    // เบราว์เซอร์บนเครื่องเดียวกับ Docker: map พอร์ต host เช่น 5000:5000 → ใช้ localhost
+    return extra.apiBaseWeb || DEFAULT_WEB;
+  }
+
+  if (extra.apiBase) return extra.apiBase;
+
+  return getDefaultNativeBase();
+}
+
+async function parseJson(res) {
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return { message: text || 'Invalid response' };
+  }
+}
+
+export async function apiFetch(path, options = {}) {
+  const base = getApiBase();
+  const url = `${base}${path.startsWith('/') ? path : `/${path}`}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+  const res = await fetch(url, { ...options, headers });
+  const data = await parseJson(res);
+  if (!res.ok) {
+    const err = new Error(data.message || `Request failed (${res.status})`);
+    err.status = res.status;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+export function authHeaders(token) {
+  if (!token) return {};
+  return { Authorization: `Bearer ${token}` };
+}

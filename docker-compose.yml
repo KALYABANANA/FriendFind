@@ -1,0 +1,69 @@
+# FriendFind — Backend (Node) + MySQL ใน Docker network เดียวกัน
+# รัน: docker compose up --build -d
+# หยุด: docker compose down
+# ลบข้อมูล DB ทั้งหมด (volume): docker compose down -v
+#
+# Web (Expo): รัน `cd frontend && npm run web` บนเครื่องเดียวกัน
+# แอปเรียก API ที่ http://localhost:BACKEND_PORT (ค่าเริ่ม 5000) — ดู WEB-DOCKER.md
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: friendfind-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-friendfind_root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-study_match_db}
+    # เปิดพอร์ตให้เครื่อง host เข้า MySQL ได้ (ปิดทิ้งได้ถ้าไม่ต้องการ)
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # รันครั้งแรกตอนสร้าง volume — สร้างตารางจาก schema
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "127.0.0.1",
+          "-uroot",
+          "-p${MYSQL_ROOT_PASSWORD:-friendfind_root}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    networks:
+      - friendfind-net
+
+  backend:
+    build:
+      context: ./backend/backend
+      dockerfile: Dockerfile
+    container_name: friendfind-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    environment:
+      PORT: "5000"
+      # ชื่อ service `db` = hostname ภายใน Docker network
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:-friendfind_root}
+      DB_NAME: ${MYSQL_DATABASE:-study_match_db}
+      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - friendfind-net
+
+volumes:
+  mysql_data:
+
+networks:
+  friendfind-net:
+    driver: bridge
