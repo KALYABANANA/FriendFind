@@ -4,13 +4,14 @@ import {
   Text, 
   StyleSheet, 
   Image, 
-  TouchableOpacity, 
-  SafeAreaView, 
+  TouchableOpacity,
+  SafeAreaView,
   TextInput,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
@@ -67,7 +68,7 @@ export default function RegisterScreen({ navigation }) {
     if (step > 1) {
       setStep(step - 1);
     } else {
-      navigation.goBack();
+      navigation.navigate('Loader');
     }
   };
 
@@ -258,7 +259,11 @@ export default function RegisterScreen({ navigation }) {
         style={styles.container}
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <TouchableOpacity 
+            onPress={handleBack} 
+            style={styles.backButton}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+          >
             <Ionicons name="chevron-back" size={28} color="#000" />
           </TouchableOpacity>
         </View>
@@ -279,17 +284,16 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FFEAF2',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   container: {
     flex: 1,
   },
   header: {
     width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 16,
     paddingTop: 10,
-    zIndex: 10,
   },
   backButton: {
     padding: 8,

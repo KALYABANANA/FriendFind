@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  Image, 
-  TouchableOpacity, 
-  SafeAreaView, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
   TextInput,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  StatusBar
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
@@ -29,21 +30,25 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
       >
-        <View style={styles.content}>
-          {/* Header with Back Button */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Ionicons name="chevron-back" size={28} color="#000" />
-            </TouchableOpacity>
-          </View>
+        {/* Header with Back Button */}
+        <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('Loader')} 
+            style={styles.backButton}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+          >
+            <Ionicons name="chevron-back" size={28} color="#000" />
+          </TouchableOpacity>
+        </View>
 
+        <View style={styles.content}>
           {/* Logo */}
-          <Image 
-            source={require('../assets/fries_logo.png')} 
+          <Image
+            source={require('../assets/fries_logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -71,7 +76,7 @@ export default function LoginScreen({ navigation }) {
           </View>
 
           {/* Continue Button */}
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.continueButton}
             onPress={handleContinue}
           >
@@ -113,7 +118,8 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFEAF2', 
+    backgroundColor: '#FFEAF2',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   content: {
     flex: 1,
@@ -124,11 +130,11 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     alignItems: 'flex-start',
-    marginBottom: 10,
+    paddingHorizontal: 16,
+    paddingTop: 10,
   },
   backButton: {
     padding: 8,
-    marginLeft: -8,
   },
   logo: {
     width: 180,

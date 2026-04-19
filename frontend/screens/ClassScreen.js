@@ -51,7 +51,7 @@ export default function ClassScreen() {
 
   const handleSelectSubject = (item) => {
     setActiveSubject(item);
-    navigation.navigate('Swipe'); // Navigates to the Swipe screen
+    navigation.navigate('GroupClass'); // Navigates to the GroupClass screen
   };
 
   const filteredSubjects = subjects.filter(sub => 
