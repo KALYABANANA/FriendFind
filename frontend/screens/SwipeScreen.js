@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,21 +19,36 @@ const { width: SCREEN_W } = Dimensions.get('window');
 const SWIPE_OUT = SCREEN_W * 0.35;
 
 export default function SwipeScreen() {
-  const { activeSubject, fetchUsersByActiveSubject } = useApp();
+  const { fetchUsersByActiveSubject, fetchAllUsers, fetchSubjects } = useApp();
   const [users, setUsers] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [selectedTab, setSelectedTab] = useState('Find');
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const position = useRef(new Animated.ValueXY()).current;
 
+  // Fetch subjects once on mount
+  useEffect(() => {
+    const loadSubjects = async () => {
+      try {
+        const data = await fetchSubjects();
+        setSubjects(data.subjects || []);
+      } catch (e) {
+        console.warn("Failed to load subjects", e);
+      }
+    };
+    loadSubjects();
+  }, [fetchSubjects]);
+
   const load = useCallback(async () => {
-    if (!activeSubject?.subject_code) {
-      setUsers([]);
-      setIndex(0);
-      return;
-    }
     setLoading(true);
     try {
-      const data = await fetchUsersByActiveSubject(activeSubject.subject_code);
+      let data;
+      if (selectedTab === 'Find') {
+        data = await fetchAllUsers();
+      } else {
+        data = await fetchUsersByActiveSubject(selectedTab);
+      }
       setUsers(data.users || []);
       setIndex(0);
       position.setValue({ x: 0, y: 0 });
@@ -42,7 +58,7 @@ export default function SwipeScreen() {
     } finally {
       setLoading(false);
     }
-  }, [activeSubject, fetchUsersByActiveSubject, position]);
+  }, [selectedTab, fetchAllUsers, fetchUsersByActiveSubject, position]);
 
   useEffect(() => {
     load();
@@ -57,6 +73,7 @@ export default function SwipeScreen() {
 
   const forceSwipe = useCallback(
     (direction) => {
+      if (!current) return;
       const x = direction === 'right' ? SCREEN_W : -SCREEN_W;
       Animated.timing(position, {
         toValue: { x, y: 0 },
@@ -64,7 +81,7 @@ export default function SwipeScreen() {
         useNativeDriver: false,
       }).start(() => goNext());
     },
-    [goNext, position]
+    [goNext, position, current]
   );
 
   const panResponder = useRef(
@@ -99,20 +116,9 @@ export default function SwipeScreen() {
     transform: [{ translateX: position.x }, { translateY: position.y }, { rotate }],
   };
 
-  if (!activeSubject) {
-    return (
-      <SafeAreaView style={styles.safe} edges={['top']}>
-        <View style={styles.center}>
-          <Text style={styles.emptyTitle}>Select subject</Text>
-          <Text style={styles.emptySubtitle}>Please choose a subject first to start swiping.</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
   const profileName = current?.name || current?.username || 'No name';
   const profileYear = current?.year ? `ปี ${current.year}` : 'ปี ไม่ระบุ';
-  const profileMajor = current?.major || current?.faculty || 'สาขา ไม่ระบุ';
+  const profileLocation = current?.faculty || 'คณะ ไม่ระบุ';
   const profileImage = current?.profile_image_url
     ? { uri: current.profile_image_url }
     : require('../assets/fries_logo.png');
@@ -121,8 +127,27 @@ export default function SwipeScreen() {
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.headerBar}>
         <View style={styles.headerLogoRow}>
-          <View style={styles.fakeLogo} />
-          <Text style={styles.headerTitle}>Find</Text>
+          <View style={styles.fakeLogo}>
+            <Text style={{fontSize: 24}}>🍟</Text>
+          </View>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={styles.tabsContent}
+          >
+            <TouchableOpacity onPress={() => setSelectedTab('Find')}>
+              <Text style={[styles.headerTab, selectedTab === 'Find' && styles.headerTabActive]}>
+                Find
+              </Text>
+            </TouchableOpacity>
+            {subjects.map((sub, i) => (
+              <TouchableOpacity key={i} onPress={() => setSelectedTab(sub.subject_code)}>
+                <Text style={[styles.headerTab, selectedTab === sub.subject_code && styles.headerTabActive]}>
+                  {sub.subject_code}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
         <TouchableOpacity style={styles.notificationButton}>
           <MaterialCommunityIcons name="bell-outline" size={24} color={colors.text} />
@@ -133,15 +158,14 @@ export default function SwipeScreen() {
         {loading ? (
           <Text style={styles.muted}>Loading classmates…</Text>
         ) : !current ? (
-          <Text style={styles.muted}>No more profiles for this subject.</Text>
+          <Text style={styles.muted}>No more profiles found.</Text>
         ) : (
           <Animated.View style={[styles.card, cardStyle]} {...panResponder.panHandlers}>
             <ImageBackground source={profileImage} style={styles.cardImage} imageStyle={styles.cardImageStyle}>
               <View style={styles.gradientOverlay} />
               <View style={styles.profileInfo}>
                 <Text style={styles.profileName}>{profileName}</Text>
-                <Text style={styles.profileMeta}>{profileYear}</Text>
-                <Text style={styles.profileMajor}>{profileMajor}</Text>
+                <Text style={styles.profileMeta}>{profileLocation}</Text>
               </View>
             </ImageBackground>
           </Animated.View>
@@ -169,34 +193,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    paddingTop: 16,
-    paddingBottom: 12,
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: '#fff',
   },
   headerLogoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   fakeLogo: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: '#FFD700',
     marginRight: 10,
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: colors.text,
+  tabsContent: {
+    alignItems: 'center',
+    paddingRight: 20,
+  },
+  headerTab: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#D1D5DB', // light gray for inactive
+    marginRight: 16,
+  },
+  headerTabActive: {
+    color: '#000',
+    textDecorationLine: 'underline',
   },
   notificationButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: '#F5F5F5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginLeft: 10,
   },
   stage: {
     flex: 1,
@@ -242,18 +267,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     marginTop: 8,
-  },
-  profileMajor: {
-    color: '#fff',
-    fontSize: 14,
-    marginTop: 4,
     opacity: 0.9,
   },
   muted: { color: colors.textMuted, fontSize: 16, textAlign: 'center' },
   actionsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
+    gap: 24,
     paddingVertical: 22,
     width: '100%',
     maxWidth: 360,
@@ -283,17 +305,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CD965',
   },
   center: { flex: 1, justifyContent: 'center', padding: 24 },
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.text,
-    textAlign: 'center',
-  },
-  emptySubtitle: {
-    marginTop: 10,
-    fontSize: 16,
-    color: colors.textMuted,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
 });

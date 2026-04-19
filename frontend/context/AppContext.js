@@ -112,6 +112,10 @@ export function AppProvider({ children }) {
     []
   );
 
+  const fetchAllUsers = useCallback(async () => {
+    return apiFetch('/api/users');
+  }, []);
+
   const fetchGroups = useCallback(
     async (subjectId) => {
       const q = subjectId ? `?subject_id=${encodeURIComponent(subjectId)}` : '';
@@ -153,6 +157,7 @@ export function AppProvider({ children }) {
       mockSetUser,
       logout,
       fetchSubjects,
+      fetchAllUsers,
       fetchUsersByActiveSubject,
       fetchGroups,
       createGroup,
@@ -170,6 +175,7 @@ export function AppProvider({ children }) {
       mockSetUser,
       logout,
       fetchSubjects,
+      fetchAllUsers,
       fetchUsersByActiveSubject,
       fetchGroups,
       createGroup,

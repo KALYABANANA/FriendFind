@@ -1,20 +1,20 @@
 const db = require("../config/db");
 
 const createUser = async (userData) => {
-  const { username, email, passwordHash, faculty, year, interests, profileImageUrl } = userData;
+  const { username, email, phone, passwordHash, faculty, year, interests, profileImageUrl } = userData;
 
   const [result] = await db.execute(
     `INSERT INTO users
-      (username, email, password_hash, faculty, \`year\`, interests, profile_image_url)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [username, email, passwordHash, faculty || null, year || null, interests || null, profileImageUrl || null]
+      (username, email, phone, password_hash, faculty, \`year\`, interests, profile_image_url)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [username, email, phone || null, passwordHash, faculty || null, year || null, interests || null, profileImageUrl || null]
   );
 
   return result.insertId;
 };
 
 const findUserByEmail = async (email) => {
-  const [rows] = await db.execute("SELECT * FROM users WHERE email = ? LIMIT 1", [email]);
+  const [rows] = await db.execute("SELECT id, username, email, phone, faculty, `year`, interests, profile_image_url, password_hash FROM users WHERE email = ? LIMIT 1", [email]);
   return rows[0] || null;
 };
 
@@ -50,9 +50,28 @@ const fetchUsersByActiveSubject = async (subjectCode) => {
   return rows;
 };
 
+const fetchAllUsers = async () => {
+  const [rows] = await db.execute(
+    `SELECT
+       id,
+       username,
+       email,
+       phone,
+       faculty,
+       \`year\`,
+       interests,
+       profile_image_url
+     FROM users
+     ORDER BY RAND()
+     LIMIT 100`
+  );
+  return rows;
+};
+
 module.exports = {
   createUser,
   findUserByEmail,
   findUserByUsernameOrEmail,
   fetchUsersByActiveSubject,
+  fetchAllUsers,
 };

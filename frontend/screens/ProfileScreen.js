@@ -26,7 +26,7 @@ export default function ProfileScreen() {
       <View style={styles.header}>
         <Text style={{fontSize: 32}}>🍟</Text>
         <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
           <Ionicons name="settings-sharp" size={28} color="#000" />
         </TouchableOpacity>
       </View>

@@ -1,4 +1,4 @@
-const { fetchUsersByActiveSubject } = require("../models/userModel");
+const { fetchUsersByActiveSubject, fetchAllUsers } = require("../models/userModel");
 
 const getUsersByActiveSubject = async (req, res, next) => {
   try {
@@ -14,4 +14,13 @@ const getUsersByActiveSubject = async (req, res, next) => {
   }
 };
 
-module.exports = { getUsersByActiveSubject };
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await fetchAllUsers();
+    return res.json({ count: users.length, users });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+module.exports = { getUsersByActiveSubject, getAllUsers };

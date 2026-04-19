@@ -11,6 +11,7 @@ import LoaderScreen from '../screens/LoaderScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
+import SettingScreen from '../screens/SettingScreen';
 import GroupClassScreen from '../screens/GroupClassScreen';
 import GroupJoinScreen from '../screens/GroupJoinScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -49,6 +50,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="Setting" component={SettingScreen} />
         <Stack.Screen name="MainTabs" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>

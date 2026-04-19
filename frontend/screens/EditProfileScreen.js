@@ -22,26 +22,12 @@ export default function EditProfileScreen() {
   const navigation = useNavigation();
   const [bio, setBio] = useState('');
 
-  // Dummy image URLs for the layout
-  const images = [
-    'https://picsum.photos/seed/picsum1/400/300', // large
-    'https://picsum.photos/seed/picsum2/200/300', // small
-    'https://picsum.photos/seed/picsum3/200/300',
-    'https://picsum.photos/seed/picsum4/200/300',
-    'https://picsum.photos/seed/picsum5/200/300',
-    'https://picsum.photos/seed/picsum6/200/300',
-    'https://picsum.photos/seed/picsum7/200/300',
-    'https://picsum.photos/seed/picsum8/200/300',
-  ];
-
-  const renderImageWithDelete = (uri, width, height) => (
-    <View style={[styles.imageWrapper, { width, height }]}>
-      <Image source={{ uri }} style={styles.image} resizeMode="cover" />
-      <TouchableOpacity style={styles.deleteBtn} activeOpacity={0.7}>
-        <Ionicons name="close" size={14} color="#000" />
-      </TouchableOpacity>
+  const renderEmptySlot = (width, height) => (
+    <View style={[styles.imageWrapper, { width, height, justifyContent: 'center', alignItems: 'center' }]}>
+      <Ionicons name="add" size={32} color="#8E8E93" />
     </View>
   );
+
 
   const renderListItem = (label, value) => (
     <View style={styles.listItemContainer}>
@@ -58,7 +44,7 @@ export default function EditProfileScreen() {
           <Text style={{fontSize: 32}}>🍟</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Edit Profile</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
           <Ionicons name="settings-sharp" size={28} color="#000" />
         </TouchableOpacity>
       </View>
@@ -75,20 +61,20 @@ export default function EditProfileScreen() {
         <View style={styles.gridContainer}>
           {/* Row 1 */}
           <View style={styles.row}>
-            {renderImageWithDelete(images[0], COL_WIDTH * 2 + SPACING, 180)}
-            {renderImageWithDelete(images[1], COL_WIDTH, 180)}
+            {renderEmptySlot(COL_WIDTH * 2 + SPACING, 180)}
+            {renderEmptySlot(COL_WIDTH, 180)}
           </View>
           {/* Row 2 */}
           <View style={styles.row}>
-            {renderImageWithDelete(images[2], COL_WIDTH, 140)}
-            {renderImageWithDelete(images[3], COL_WIDTH, 140)}
-            {renderImageWithDelete(images[4], COL_WIDTH, 140)}
+            {renderEmptySlot(COL_WIDTH, 140)}
+            {renderEmptySlot(COL_WIDTH, 140)}
+            {renderEmptySlot(COL_WIDTH, 140)}
           </View>
           {/* Row 3 */}
           <View style={styles.row}>
-            {renderImageWithDelete(images[5], COL_WIDTH, 140)}
-            {renderImageWithDelete(images[6], COL_WIDTH, 140)}
-            {renderImageWithDelete(images[7], COL_WIDTH, 140)}
+            {renderEmptySlot(COL_WIDTH, 140)}
+            {renderEmptySlot(COL_WIDTH, 140)}
+            {renderEmptySlot(COL_WIDTH, 140)}
           </View>
         </View>
 
@@ -172,30 +158,11 @@ const styles = StyleSheet.create({
     marginBottom: SPACING,
   },
   imageWrapper: {
-    position: 'relative',
     borderRadius: 12,
     backgroundColor: '#EBEBEB',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 12,
-  },
-  deleteBtn: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    backgroundColor: '#FFF',
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
+    borderWidth: 2,
+    borderColor: '#EBEBEB',
+    borderStyle: 'dashed',
   },
   sectionTitle: {
     textAlign: 'center',
