@@ -81,11 +81,15 @@ export default function GroupClassScreen({ navigation }) {
     }
   };
 
+  const handleOpenAddMembers = (group) => {
+    navigation.navigate('GroupAddMember', { group });
+  };
+
   const renderGroupCard = ({ item, index }) => {
     const isHot = index === 0; // Mocking HOT badge for the first item
-    
-    // Mock avatars A, B, C, D
-    const mockAvatars = ['A', 'B', 'C', 'D'].slice(0, Math.min(4, item.member_limit || 5));
+    const limit = item.member_limit || 5;
+    const mockAvatars = ['A', 'B', 'C', 'D'].slice(0, Math.min(4, Math.max(0, limit - 1)));
+    const hasOpenSlot = mockAvatars.length < limit;
     
     return (
       <TouchableOpacity 
@@ -105,16 +109,15 @@ export default function GroupClassScreen({ navigation }) {
         <Text style={styles.cardDetail} numberOfLines={2}>
           Detail : {item.description || "No description"}
         </Text>
-        
+        <Text style={styles.membersLabel}>Members</Text>
         <View style={styles.cardFooter}>
-          <View style={styles.avatarContainer}>
+          <View style={styles.membersRow}>
             {mockAvatars.map((letter, i) => (
-              <View key={i} style={[styles.avatar, { marginLeft: i > 0 ? -10 : 0, zIndex: 10 - i }]}>
+              <View key={i} style={[styles.memberAvatar, { marginRight: 10 }]}>
                 <Text style={styles.avatarText}>{letter}</Text>
               </View>
             ))}
           </View>
-          <Text style={styles.memberCount}>({mockAvatars.length}/{item.member_limit || 5})</Text>
         </View>
       </TouchableOpacity>
     );
@@ -189,14 +192,38 @@ export default function GroupClassScreen({ navigation }) {
                 numberOfLines={3}
               />
 
-              <Text style={styles.inputLabel}>Member Limit</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="e.g. 5"
-                value={memberLimit}
-                onChangeText={setMemberLimit}
-                keyboardType="number-pad"
-              />
+              <View style={styles.memberLimitSection}>
+                <Text style={styles.inputLabel}>Members</Text>
+                <View style={styles.memberPreviewRow}>
+                  {Array.from({ length: parseInt(memberLimit) || 5 }).map((_, i) => (
+                    <View key={i} style={styles.previewAvatar} />
+                  ))}
+                  <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => {
+                      const tempGroup = {
+                        id: null,
+                        title: title.trim() || 'New Group',
+                        member_limit: parseInt(memberLimit) || 5,
+                        isCreating: true,
+                      };
+                      navigation.navigate('GroupAddMember', { group: tempGroup });
+                    }}
+                  >
+                    <Text style={styles.addButtonText}>add</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.memberLimitInputRow}>
+                  <Text style={styles.memberLimitLabel}>Member Limit:</Text>
+                  <TextInput
+                    style={styles.memberLimitInput}
+                    placeholder="5"
+                    value={memberLimit}
+                    onChangeText={setMemberLimit}
+                    keyboardType="number-pad"
+                  />
+                </View>
+              </View>
 
               <TouchableOpacity 
                 style={styles.submitButton} 
@@ -303,15 +330,50 @@ const styles = StyleSheet.create({
   cardDetail: {
     fontSize: 13,
     color: '#4B5563',
-    marginBottom: 16,
+    marginBottom: 12,
+  },
+  membersLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#4B5563',
+    marginBottom: 10,
   },
   cardFooter: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  membersRow: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
   avatarContainer: {
     flexDirection: 'row',
+  },
+  memberAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#374151',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#FFF',
+  },
+  addAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#374151',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#FFF',
+  },
+  addAvatarText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: '600',
+    textTransform: 'uppercase',
   },
   avatar: {
     width: 28,
@@ -392,5 +454,60 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  memberLimitSection: {
+    marginTop: 12,
+  },
+  memberPreviewRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 14,
+    marginTop: 10,
+  },
+  previewAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#374151',
+    marginRight: 8,
+    borderWidth: 1.5,
+    borderColor: '#FFF',
+  },
+  addButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#374151',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#FFF',
+  },
+  addButtonText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+  },
+  memberLimitInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
+  },
+  memberLimitLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4B5563',
+  },
+  memberLimitInput: {
+    width: 50,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111827',
+    textAlign: 'center',
   },
 });

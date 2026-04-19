@@ -14,6 +14,8 @@ import EditProfileScreen from '../screens/EditProfileScreen';
 import SettingScreen from '../screens/SettingScreen';
 import GroupClassScreen from '../screens/GroupClassScreen';
 import GroupJoinScreen from '../screens/GroupJoinScreen';
+import GroupAddMemberScreen from '../screens/GroupAddMemberScreen';
+import ChatDetailScreen from '../screens/ChatDetailScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
@@ -26,7 +28,19 @@ function SubjectStackScreen() {
       <SubjectStack.Screen name="Class" component={ClassScreen} />
       <SubjectStack.Screen name="GroupClass" component={GroupClassScreen} />
       <SubjectStack.Screen name="GroupJoin" component={GroupJoinScreen} />
+      <SubjectStack.Screen name="GroupAddMember" component={GroupAddMemberScreen} />
     </SubjectStack.Navigator>
+  );
+}
+
+const GroupsStack = createNativeStackNavigator();
+
+function GroupsStackScreen() {
+  return (
+    <GroupsStack.Navigator screenOptions={{ headerShown: false }}>
+      <GroupsStack.Screen name="GroupDiscovery" component={GroupDiscoveryScreen} />
+      <GroupsStack.Screen name="ChatDetail" component={ChatDetailScreen} />
+    </GroupsStack.Navigator>
   );
 }
 
@@ -81,7 +95,7 @@ function MainTabs() {
         })}
       >
         <Tab.Screen name="Swipe" component={SwipeScreen} />
-        <Tab.Screen name="Groups" component={GroupDiscoveryScreen} options={{ title: 'Discovery' }} />
+        <Tab.Screen name="Groups" component={GroupsStackScreen} options={{ title: 'Discovery' }} />
         <Tab.Screen name="Subject" component={SubjectStackScreen} options={{ title: 'Class' }} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
