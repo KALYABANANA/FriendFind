@@ -11,9 +11,21 @@ import {
   Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useApp } from '../context/AppContext';
 
 export default function LoginScreen({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const { login } = useApp();
+
+  const handleContinue = async () => {
+    try {
+      const dummyEmail = `${phoneNumber}@friendfind.app`;
+      await login(dummyEmail, phoneNumber);
+      navigation.replace('MainTabs');
+    } catch (error) {
+      alert("Login failed: " + (error.message || "Unknown error"));
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -61,7 +73,7 @@ export default function LoginScreen({ navigation }) {
           {/* Continue Button */}
           <TouchableOpacity 
             style={styles.continueButton}
-            onPress={() => navigation.replace('MainTabs')} // Go to app after login
+            onPress={handleContinue}
           >
             <Text style={styles.continueText}>Continue</Text>
           </TouchableOpacity>

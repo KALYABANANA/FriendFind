@@ -6,10 +6,11 @@ import { colors } from '../constants/theme';
 import SwipeScreen from '../screens/SwipeScreen';
 import GroupDiscoveryScreen from '../screens/GroupDiscoveryScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import SubjectSelectorScreen from '../screens/SubjectSelectorScreen';
+import ClassScreen from '../screens/ClassScreen';
 import LoaderScreen from '../screens/LoaderScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
@@ -34,6 +35,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Loader" component={LoaderScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="MainTabs" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -65,7 +67,7 @@ function MainTabs() {
       >
         <Tab.Screen name="Swipe" component={SwipeScreen} />
         <Tab.Screen name="Groups" component={GroupDiscoveryScreen} options={{ title: 'Discovery' }} />
-        <Tab.Screen name="Subject" component={SubjectSelectorScreen} options={{ title: 'Subject' }} />
+        <Tab.Screen name="Subject" component={ClassScreen} options={{ title: 'Class' }} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
   );

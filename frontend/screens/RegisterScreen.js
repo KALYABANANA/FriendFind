@@ -13,6 +13,7 @@ import {
   Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useApp } from '../context/AppContext';
 
 const { width } = Dimensions.get('window');
 
@@ -30,17 +31,35 @@ export default function RegisterScreen({ navigation }) {
   const [selectedGoals, setSelectedGoals] = useState([]);
   const [bio, setBio] = useState('');
 
+  const { register, login } = useApp();
   const GOALS = [
     "Find study partners", "Stay motivated to study", 
     "Prepare for exams together", "Improve my grades", 
     "Join group study sessions", "Learn new skills"
   ];
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step < 5) {
       setStep(step + 1);
     } else {
-      navigation.replace('MainTabs'); // Finished registration
+      try {
+        const dummyEmail = `${phoneNumber}@friendfind.app`;
+        await register({
+          username: name || phoneNumber || 'New User',
+          email: dummyEmail,
+          password: phoneNumber, // Use phone number as password
+          faculty: major || 'N/A',
+          year: 1, // default
+          interests: `Goals: ${selectedGoals.join(', ')} | Bio: ${bio}`,
+          profile_image_url: ''
+        });
+        
+        // Auto-login after registration
+        await login(dummyEmail, phoneNumber);
+        navigation.replace('MainTabs'); // Finished registration
+      } catch (error) {
+        alert("Registration failed: " + (error.message || "Unknown error"));
+      }
     }
   };
 

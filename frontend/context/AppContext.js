@@ -35,10 +35,14 @@ export function AppProvider({ children }) {
 
   const setActiveSubject = useCallback(async (subject) => {
     setActiveSubjectState(subject);
-    if (subject) {
-      await AsyncStorage.setItem(STORAGE_SUBJECT, JSON.stringify(subject));
-    } else {
-      await AsyncStorage.removeItem(STORAGE_SUBJECT);
+    try {
+      if (subject) {
+        await AsyncStorage.setItem(STORAGE_SUBJECT, JSON.stringify(subject));
+      } else {
+        await AsyncStorage.removeItem(STORAGE_SUBJECT);
+      }
+    } catch (e) {
+      console.warn('AsyncStorage error:', e);
     }
   }, []);
 
@@ -49,8 +53,12 @@ export function AppProvider({ children }) {
     });
     setToken(data.token);
     setUser(data.user);
-    await AsyncStorage.setItem(STORAGE_TOKEN, data.token);
-    await AsyncStorage.setItem(STORAGE_USER, JSON.stringify(data.user));
+    try {
+      await AsyncStorage.setItem(STORAGE_TOKEN, data.token);
+      await AsyncStorage.setItem(STORAGE_USER, JSON.stringify(data.user));
+    } catch (e) {
+      console.warn('AsyncStorage error:', e);
+    }
     return data;
   }, []);
 
@@ -73,10 +81,23 @@ export function AppProvider({ children }) {
     []
   );
 
+  const mockSetUser = useCallback(async (userData) => {
+    setUser(userData);
+    try {
+      await AsyncStorage.setItem(STORAGE_USER, JSON.stringify(userData));
+    } catch (e) {
+      console.warn('AsyncStorage error:', e);
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     setToken(null);
     setUser(null);
-    await AsyncStorage.multiRemove([STORAGE_TOKEN, STORAGE_USER]);
+    try {
+      await AsyncStorage.multiRemove([STORAGE_TOKEN, STORAGE_USER]);
+    } catch (e) {
+      console.warn('AsyncStorage error:', e);
+    }
   }, []);
 
   const fetchSubjects = useCallback(async () => {
@@ -129,6 +150,7 @@ export function AppProvider({ children }) {
       user,
       login,
       register,
+      mockSetUser,
       logout,
       fetchSubjects,
       fetchUsersByActiveSubject,
@@ -145,6 +167,7 @@ export function AppProvider({ children }) {
       user,
       login,
       register,
+      mockSetUser,
       logout,
       fetchSubjects,
       fetchUsersByActiveSubject,
