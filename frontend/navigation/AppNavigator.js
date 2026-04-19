@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/theme';
 import SwipeScreen from '../screens/SwipeScreen';
 import GroupDiscoveryScreen from '../screens/GroupDiscoveryScreen';
+import ChatDetailScreen from '../screens/ChatDetailScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ClassScreen from '../screens/ClassScreen';
 import LoaderScreen from '../screens/LoaderScreen';
@@ -37,6 +38,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="MainTabs" component={MainTabs} />
+        <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -56,7 +58,7 @@ function MainTabs() {
           tabBarIcon: ({ color, size }) => {
             const map = {
               Swipe: 'heart-outline',
-              Groups: 'people-outline',
+              Groups: 'chatbubble-outline',
               Profile: 'person-outline',
               Subject: 'book-outline',
             };
@@ -66,7 +68,7 @@ function MainTabs() {
         })}
       >
         <Tab.Screen name="Swipe" component={SwipeScreen} />
-        <Tab.Screen name="Groups" component={GroupDiscoveryScreen} options={{ title: 'Discovery' }} />
+        <Tab.Screen name="Groups" component={GroupDiscoveryScreen} options={{ title: 'Chat' }} />
         <Tab.Screen name="Subject" component={ClassScreen} options={{ title: 'Class' }} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
