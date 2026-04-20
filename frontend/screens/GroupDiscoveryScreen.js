@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../constants/theme';
@@ -75,6 +76,7 @@ export default function GroupDiscoveryScreen() {
   const emptyText = selectedTab === 'friends' ? 'No friends to chat with.' : 'No group chats available.';
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.headerBar}>
         <Text style={styles.title}>Chat</Text>
@@ -134,11 +136,12 @@ export default function GroupDiscoveryScreen() {
         />
       )}
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
+  safe: { flex: 1, backgroundColor: 'transparent' },
   headerBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',

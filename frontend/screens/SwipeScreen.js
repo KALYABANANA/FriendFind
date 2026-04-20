@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
+import { Image, 
   Animated,
   Dimensions,
   ImageBackground,
@@ -10,6 +10,7 @@ import {
   View,
   ScrollView
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../constants/theme';
@@ -121,14 +122,15 @@ export default function SwipeScreen() {
   const profileLocation = current?.faculty || 'คณะ ไม่ระบุ';
   const profileImage = current?.profile_image_url
     ? { uri: current.profile_image_url }
-    : require('../assets/fries_logo.png');
+    : require('../assets/logo.png');
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.headerBar}>
         <View style={styles.headerLogoRow}>
           <View style={styles.fakeLogo}>
-            <Text style={{fontSize: 24}}>🍟</Text>
+            <Image source={require('../assets/logo.png')} style={{width: 24, height: 24}} resizeMode="contain" />
           </View>
           <ScrollView 
             horizontal 
@@ -184,11 +186,12 @@ export default function SwipeScreen() {
         </TouchableOpacity>
       </View>
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
+  safe: { flex: 1, backgroundColor: 'transparent' },
   headerBar: {
     flexDirection: 'row',
     alignItems: 'center',

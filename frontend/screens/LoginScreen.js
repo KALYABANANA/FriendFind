@@ -11,6 +11,7 @@ import {
   Platform,
   StatusBar
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 
@@ -29,6 +30,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -48,7 +50,7 @@ export default function LoginScreen({ navigation }) {
         <View style={styles.content}>
           {/* Logo */}
           <Image
-            source={require('../assets/fries_logo.png')}
+            source={require('../assets/logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -112,13 +114,14 @@ export default function LoginScreen({ navigation }) {
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFEAF2',
+    backgroundColor: 'transparent',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   content: {

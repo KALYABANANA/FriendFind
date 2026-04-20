@@ -13,6 +13,7 @@ import {
   Dimensions,
   StatusBar
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 
@@ -93,7 +94,7 @@ export default function RegisterScreen({ navigation }) {
 
   const renderStep1 = () => (
     <View style={styles.stepContainer}>
-      <Image source={require('../assets/fries_logo.png')} style={styles.logo} resizeMode="contain" />
+      <Image source={require('../assets/logo.png')} style={styles.logo} resizeMode="contain" />
       <Text style={styles.questionTitle}>What's your phone number?</Text>
       
       <View style={styles.phoneInputContainer}>
@@ -120,7 +121,7 @@ export default function RegisterScreen({ navigation }) {
 
   const renderStep2 = () => (
     <View style={styles.stepContainer}>
-      <Image source={require('../assets/fries_logo.png')} style={styles.logo} resizeMode="contain" />
+      <Image source={require('../assets/logo.png')} style={styles.logo} resizeMode="contain" />
       <Text style={styles.titleLarge}>ENTER YOUR CONFIRMATION CODE</Text>
       <Text style={styles.subtitleGray}>Sent to: +66 {phoneNumber || '08xxxxxxxx'}</Text>
       
@@ -253,6 +254,7 @@ export default function RegisterScreen({ navigation }) {
   );
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -277,13 +279,14 @@ export default function RegisterScreen({ navigation }) {
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFEAF2',
+    backgroundColor: 'transparent',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   container: {

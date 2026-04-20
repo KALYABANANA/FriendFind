@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../constants/theme';
 import { useApp } from '../context/AppContext';
@@ -60,6 +61,7 @@ export default function SubjectSelectorScreen() {
   };
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>Subject Selector</Text>
@@ -86,11 +88,12 @@ export default function SubjectSelectorScreen() {
         />
       )}
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
+  safe: { flex: 1, backgroundColor: 'transparent' },
   header: { paddingHorizontal: 20, paddingBottom: 8 },
   title: { fontSize: 22, fontWeight: '700', color: colors.text },
   sub: { marginTop: 6, fontSize: 14, color: colors.textMuted, lineHeight: 20 },

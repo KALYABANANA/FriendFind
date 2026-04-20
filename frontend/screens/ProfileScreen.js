@@ -1,5 +1,5 @@
 import React from 'react';
-import {
+import { Image, 
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -8,6 +8,7 @@ import {
   Platform,
   StatusBar
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
@@ -21,10 +22,11 @@ export default function ProfileScreen() {
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.safe} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={{fontSize: 32}}>🍟</Text>
+        <Image source={require('../assets/logo.png')} style={{width: 32, height: 32}} resizeMode="contain" />
         <Text style={styles.headerTitle}>Profile</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
           <Ionicons name="settings-sharp" size={28} color="#000" />
@@ -49,13 +51,14 @@ export default function ProfileScreen() {
       </View>
 
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { 
     flex: 1, 
-    backgroundColor: '#FFF0F5', // Light pink background matching the design
+    backgroundColor: 'transparent', // Light pink background matching the design
   },
   header: { 
     flexDirection: 'row', 

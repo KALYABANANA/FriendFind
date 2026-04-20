@@ -10,6 +10,7 @@ import {
   Platform,
   SafeAreaView,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
 
@@ -83,6 +84,7 @@ export default function ChatDetailScreen({ route, navigation }) {
   );
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
@@ -158,13 +160,14 @@ export default function ChatDetailScreen({ route, navigation }) {
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFEAF2',
+    backgroundColor: 'transparent',
   },
   header: {
     flexDirection: 'row',
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
   groupNameSection: {
     alignItems: 'center',
     paddingVertical: 20,
-    backgroundColor: '#FFEAF2',
+    backgroundColor: 'transparent',
   },
   groupNameLabel: {
     fontSize: 16,

@@ -7,6 +7,7 @@ import {
   Alert,
   ActivityIndicator
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useApp } from '../context/AppContext';
@@ -48,6 +49,7 @@ export default function GroupJoinScreen({ route, navigation }) {
   };
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -103,13 +105,14 @@ export default function GroupJoinScreen({ route, navigation }) {
         </View>
       </View>
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFEAF2', // Light pink background
+    backgroundColor: 'transparent', // Light pink background
   },
   header: {
     flexDirection: 'row',

@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -37,11 +38,12 @@ export default function EditProfileScreen() {
   );
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.safe} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingRight: 10 }}>
-          <Text style={{fontSize: 32}}>🍟</Text>
+          <Image source={require('../assets/logo.png')} style={{width: 32, height: 32}} resizeMode="contain" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Edit Profile</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
@@ -120,13 +122,14 @@ export default function EditProfileScreen() {
         
       </ScrollView>
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#FFF0F5', // Light pink background
+    backgroundColor: 'transparent', // Light pink background
   },
   header: {
     flexDirection: 'row',

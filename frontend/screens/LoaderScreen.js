@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoaderScreen({ navigation }) {
     return (
-        <SafeAreaView style={styles.container}>
+        <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
+    <SafeAreaView style={styles.container}>
             <View style={styles.content}>
                 {/* Logo */}
                 <Image
-                    source={require('../assets/fries_logo.png')}
+                    source={require('../assets/logo.png')}
                     style={styles.logo}
                     resizeMode="contain"
                 />
@@ -37,13 +39,14 @@ export default function LoaderScreen({ navigation }) {
                 </View>
             </View>
         </SafeAreaView>
+    </LinearGradient>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFEAF2',
+        backgroundColor: 'transparent',
     },
     content: {
         flex: 1,

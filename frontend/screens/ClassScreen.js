@@ -11,6 +11,7 @@ import {
   Image,
   Dimensions
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/theme';
@@ -78,11 +79,12 @@ export default function ClassScreen() {
   };
 
   return (
+    <LinearGradient colors={['#FFFFFF', '#FECEE6']} style={{flex: 1}}>
     <SafeAreaView style={styles.safe} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
         {/* Replace with actual fries logo if available in assets, using emoji for now */}
-        <Text style={{fontSize: 32}}>🍟</Text>
+        <Image source={require('../assets/logo.png')} style={{width: 32, height: 32}} resizeMode="contain" />
         <Text style={styles.headerTitle}>Class</Text>
         <TouchableOpacity>
           <Ionicons name="notifications-outline" size={28} color="#000" />
@@ -125,11 +127,12 @@ export default function ClassScreen() {
         />
       )}
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FFF0F5' }, // light pink background
+  safe: { flex: 1, backgroundColor: 'transparent' }, // light pink background
   header: { 
     flexDirection: 'row', 
     alignItems: 'center', 
